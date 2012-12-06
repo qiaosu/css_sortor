@@ -16,7 +16,7 @@ class CSSSortor
 		@parser = CssParser::Parser.new
 		puts options[:path]
 		puts 'parser loaduri.'
-		@parser.load_uri!('http://dev.assets.alipay.net/fundselling/alice.fundselling-1.0-SNAPSHOT-src.css')
+		@parser.load_uri!('http://twitter.github.com/bootstrap/assets/css/docs.css')
 		puts 'loaded.'
 		alipay_process!(@parser)
 		puts @parser.to_s
