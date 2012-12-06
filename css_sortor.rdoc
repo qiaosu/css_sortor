@@ -1,0 +1,5 @@
+= css_sortor
+
+Generate this with
+    css_sortor rdoc
+After you have described your command line interface
