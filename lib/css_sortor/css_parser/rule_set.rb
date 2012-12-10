@@ -92,13 +92,31 @@ module CssParser
     end
 
     # Iterate through declarations.
-    def each_declaration # :yields: property, value, is_important
-      debugger
-      decs = @declarations.sort { |a,b| a[1][:order].nil? || b[1][:order].nil? ? 0 : a[1][:order] <=> b[1][:order] }
+    def each_declaration(options = {}) # :yields: property, value, is_important
+      # debugger
+      options = {:sort_mode => 'base'}.merge(options)
+      if options[:sort_mode] == 'abc' then
+        decs = ex_sort(@declarations)
+      elsif options[:sort_mode] == 'group' then
+        decs = ex_sort(@declarations)
+      else 
+        decs = base_sort(@declarations)
+      end
       decs.each do |property, data|
         value = data[:value]
         yield property.downcase.strip, value.strip, data[:is_important]
       end
+    end
+
+    def base_sort(decs)
+      decs.sort { |a,b| a[1][:order].nil? || b[1][:order].nil? ? 0 : a[1][:order] <=> b[1][:order] }
+    end
+
+    def ex_sort(decs, opt={})
+      sortor = CssParser::Sortor.new(decs, opt)
+      sortor.generate_sort_arr
+      decs = sortor.calculate_sort_point!
+      decs.sort { |a,b| a[1][:point].nil? || b[1][:point].nil? ? 0 : a[1][:point] <=> b[1][:point] }
     end
 
     # Return all declarations as a string.
@@ -106,9 +124,9 @@ module CssParser
     # TODO: Clean-up regexp doesn't seem to work
     #++
     def declarations_to_s(options = {})
-     options = {:force_important => false}.merge(options)
+     options = {:force_important => false, :sort_mode => 'base'}.merge(options)
      str = ''
-     each_declaration do |prop, val, is_important|
+     each_declaration(options) do |prop, val, is_important|
        importance = (options[:force_important] || is_important) ? ' !important' : ''
        str += "#{prop}: #{val}#{importance};\n "
      end

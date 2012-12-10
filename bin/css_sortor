@@ -19,7 +19,7 @@ desc 'hard-code check.'
 switch [:d,:hardcode]
 
 desc 'how properties sort by. letter: A - Z | group: system specified group'
-default_value 'letter'
+default_value 'abc'
 arg_name 'mode'
 flag [:o,:order]
 

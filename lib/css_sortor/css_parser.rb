@@ -166,3 +166,4 @@ end
 require File.dirname(__FILE__) + '/css_parser/rule_set'
 require File.dirname(__FILE__) + '/css_parser/regexps'
 require File.dirname(__FILE__) + '/css_parser/parser'
+require File.dirname(__FILE__) + '/css_parser/sortor'

@@ -35,7 +35,8 @@ module CssParser
     def initialize(options = {})
       @options = {:absolute_paths => false,
                   :import => true,
-                  :io_exceptions => true}.merge(options)
+                  :io_exceptions => true,
+                  :sort_mode => 'base'}.merge(options)
 
       # array of RuleSets
       @rules = []
@@ -112,6 +113,7 @@ module CssParser
       options = {:base_uri => nil, :base_dir => nil, :charset => nil, :media_types => :all, :only_media_types => :all}.merge(options)
       options[:media_types] = [options[:media_types]].flatten.collect { |mt| CssParser.sanitize_media_query(mt)}
       options[:only_media_types] = [options[:only_media_types]].flatten.collect { |mt| CssParser.sanitize_media_query(mt)}
+      options[:sort_mode] = @options[:sort_mode]
 
       # block = cleanup_block(block)
 
@@ -186,6 +188,7 @@ module CssParser
     # +media_types+ can be a symbol or an array of symbols.
     # See RuleSet#each_selector for +options+.
     def each_selector(media_types = :all, options = {}) # :yields: selectors, declarations, specificity
+      options[:sort_mode] = @options[:sort_mode]
       each_rule_set(media_types) do |rule_set|
         rule_set.each_selector(options) do |selectors, declarations, specificity|
           yield selectors, declarations, specificity
