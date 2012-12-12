@@ -115,7 +115,7 @@ module CssParser
       options[:only_media_types] = [options[:only_media_types]].flatten.collect { |mt| CssParser.sanitize_media_query(mt)}
       options[:sort_mode] = @options[:sort_mode]
 
-      # block = cleanup_block(block)
+      block = cleanup_block(block)
 
       if options[:base_uri] and @options[:absolute_paths]
         block = CssParser.convert_uris(block, options[:base_uri])
@@ -364,7 +364,10 @@ module CssParser
     # Load a local CSS file.
     def load_file!(file_name, base_dir = nil, media_types = :all)
       file_name = File.expand_path(file_name, base_dir)
-      return unless File.readable?(file_name)
+      if !File.readable?(file_name) then
+        raise 'Not a accessable file.'
+        return
+      end
       return unless circular_reference_check(file_name)
 
       src = IO.read(file_name)
@@ -401,7 +404,15 @@ module CssParser
     # Returns a string.
     def cleanup_block(block) # :nodoc:
       # Strip CSS comments
-      block.gsub!(STRIP_CSS_COMMENTS_RX, '')
+      # block.gsub!(STRIP_CSS_COMMENTS_RX, '')
+      index = 0
+      block.gsub!(STRIP_CSS_COMMENTS_RX) { |s| 
+        if index > 0 then 
+          s = ""
+        end
+        index += 1
+        s
+      }
 
       # Strip HTML comments - they shouldn't really be in here but 
       # some people are just crazy...

@@ -1,6 +1,6 @@
 = css_sortor
 
-Describe your project here
+CSS整理术
 
 :include:css_sortor.rdoc
 

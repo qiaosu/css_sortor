@@ -1,13 +1,6 @@
 #!/usr/bin/env ruby
 require 'gli'
-begin # XXX: Remove this begin/rescue before distributing your app
 require 'css_sortor'
-rescue LoadError
-  STDERR.puts "In development, you need to use `bundle exec bin/todo` to run your app"
-  STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
-  STDERR.puts "Feel free to remove this message from bin/css_sortor now"
-  exit 64
-end
 
 include GLI::App
 
@@ -18,7 +11,10 @@ version CssSortor::VERSION
 desc 'hard-code check.'
 switch [:d,:hardcode]
 
-desc 'how properties sort by. letter: A - Z | group: system specified group'
+desc 'remove comments?'
+switch [:c,:comment]
+
+desc 'how properties sort by. abc: A - Z | group: system specified group'
 default_value 'abc'
 arg_name 'mode'
 flag [:o,:order]
@@ -39,11 +35,12 @@ command [:g, :generate] do |c|
     # If you have any errors, just raise them
     # raise "that command made no sense"
     options = {}
-    options[:order] = global_options[:order]
+    options[:order] = global_options[:order].gsub(/^=/, '')
+    options[:comment] = global_options[:comment]
     options[:path] = args[0]
+    options[:target] = args[1]
 
     CSSSortor.new(options)
-    puts "generate command ran"
   end
 end
 

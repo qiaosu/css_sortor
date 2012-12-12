@@ -96,9 +96,9 @@ module CssParser
       # debugger
       options = {:sort_mode => 'base'}.merge(options)
       if options[:sort_mode] == 'abc' then
-        decs = ex_sort(@declarations)
+        decs = ex_sort(@declarations, options)
       elsif options[:sort_mode] == 'group' then
-        decs = ex_sort(@declarations)
+        decs = ex_sort(@declarations, options)
       else 
         decs = base_sort(@declarations)
       end
@@ -115,7 +115,7 @@ module CssParser
     def ex_sort(decs, opt={})
       sortor = CssParser::Sortor.new(decs, opt)
       sortor.generate_sort_arr
-      decs = sortor.calculate_sort_point!
+      decs = sortor.calculate_sort_point
       decs.sort { |a,b| a[1][:point].nil? || b[1][:point].nil? ? 0 : a[1][:point] <=> b[1][:point] }
     end
 
@@ -128,10 +128,10 @@ module CssParser
      str = ''
      each_declaration(options) do |prop, val, is_important|
        importance = (options[:force_important] || is_important) ? ' !important' : ''
-       str += "#{prop}: #{val}#{importance};\n "
+       str += "    #{prop}: #{val}#{importance};\n"
      end
      # str.gsub(/^[\s^(\{)]+|[\n\r\f\t]*|[\s]+$/mx, '').strip
-     str.gsub(/^[\s^(\{)]+|[\s]+$/mx, '').strip
+     str.gsub(/[\s]+$/mx, '')
     end
 
     # Return the CSS rule set as a string.
